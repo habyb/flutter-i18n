@@ -1,20 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutteri18n/screens/dashboard.dart';
 
+import 'components/localization.dart';
 import 'components/theme.dart';
 import 'package:flutter/material.dart';
-
 
 void main() {
   runApp(FlutterI18n());
 }
 
-class LogObserver extends BlocObserver{
+class LogObserver extends BlocObserver {
   @override
-    void onChange(Cubit cubit, Change change) {
-      print('${cubit.runtimeType} > $change');
-      super.onChange(cubit, change);
-    }
+  void onChange(Cubit cubit, Change change) {
+    print('${cubit.runtimeType} > $change');
+    super.onChange(cubit, change);
+  }
 }
 
 class FlutterI18n extends StatelessWidget {
@@ -24,7 +24,7 @@ class FlutterI18n extends StatelessWidget {
     Bloc.observer = LogObserver();
     return MaterialApp(
       theme: bytebankTheme,
-      home: DashboardContainer(),
+      home: LocalizationContainer(child: DashboardContainer()),
     );
   }
 }

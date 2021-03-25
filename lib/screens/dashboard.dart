@@ -1,10 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutteri18n/components/container.dart';
+import 'package:flutteri18n/components/localization.dart';
 import 'package:flutteri18n/models/name.dart';
 import 'package:flutter/material.dart';
 import 'package:flutteri18n/screens/contacts_list.dart';
 import 'package:flutteri18n/screens/name.dart';
 import 'package:flutteri18n/screens/transactions_list.dart';
+
 class DashboardContainer extends BlocContainer {
   @override
   Widget build(BuildContext context) {
@@ -18,6 +20,7 @@ class DashboardContainer extends BlocContainer {
 class DashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final i18n = DashboardViewI18N(context);
     return Scaffold(
       appBar: AppBar(
         title: BlocBuilder<NameCubit, String>(
@@ -39,17 +42,17 @@ class DashboardView extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 children: [
                   _FeatureItem(
-                    'Transfer',
+                    i18n.transfer,
                     Icons.monetization_on,
                     onClick: () => _showContacsList(context),
                   ),
                   _FeatureItem(
-                    'Transaction Feed',
+                    i18n.transactionFeed,
                     Icons.description,
                     onClick: () => _showTransactionsList(context),
                   ),
                   _FeatureItem(
-                    'Change Name',
+                    i18n.changeName,
                     Icons.person_outline,
                     onClick: () => _showChangeName(context),
                   ),
@@ -61,6 +64,16 @@ class DashboardView extends StatelessWidget {
       ),
     );
   }
+}
+
+class DashboardViewI18N extends ViewI18N {
+  DashboardViewI18N(BuildContext context) : super(context);
+
+  String get transfer => localize({"pt-br": "Transferir", "en": "Tranfer"});
+
+  String get transactionFeed => localize({"pt-br": "Transaçãoes", "en": "Transaction Feed"});
+
+  String get changeName =>localize({"pt-br": "Mudar Nome", "en": "Change Name"});
 }
 
 class _FeatureItem extends StatelessWidget {
@@ -107,7 +120,7 @@ class _FeatureItem extends StatelessWidget {
 }
 
 void _showContacsList(BuildContext blocContext) {
- push(blocContext, ContactsListContainer());
+  push(blocContext, ContactsListContainer());
 }
 
 void _showTransactionsList(BuildContext context) {

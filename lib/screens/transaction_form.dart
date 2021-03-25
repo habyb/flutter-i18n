@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutteri18n/components/container.dart';
 import 'package:flutteri18n/components/error.dart';
 import 'package:flutteri18n/components/progress.dart';
-import 'package:flutteri18n/components/response_dialog.dart';
 import 'package:flutteri18n/components/transaction_auth_dialog.dart';
 import 'package:flutteri18n/http/webclients/transaction_webclient.dart';
 import 'package:flutteri18n/models/contact.dart';
@@ -109,27 +108,6 @@ class TransactionFormStateless extends StatelessWidget {
         return ErrorView('Unknown error');
       },
     );
-  }
-
-  Future _showSuccessMessage(
-      Transaction transaction, BuildContext context) async {
-    if (transaction != null) {
-      await showDialog(
-          context: context,
-          builder: (contextDialog) {
-            return SuccessDialog('successful transaction');
-          });
-      Navigator.pop(context);
-    }
-  }
-
-  void _showFailureMessage(BuildContext context,
-      {String message = 'Unknown error'}) {
-    showDialog(
-        context: context,
-        builder: (contextDialog) {
-          return FailureDialog(message);
-        });
   }
 }
 
