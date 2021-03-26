@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutteri18n/screens/dashboard.dart';
-
-import 'components/localization.dart';
+import 'components/localization/locale.dart';
 import 'components/theme.dart';
 import 'package:flutter/material.dart';
+
+import 'screens/dashboard/dashboard_container.dart';
 
 void main() {
   runApp(FlutterI18n());

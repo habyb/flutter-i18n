@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutteri18n/components/container.dart';
-import 'package:flutteri18n/components/progress.dart';
+import 'package:flutteri18n/components/progress/progress.dart';
 import 'package:flutteri18n/database/dao/contact_dao.dart';
 import 'package:flutteri18n/models/contact.dart';
 import 'package:flutteri18n/screens/contact_form.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutteri18n/components/centered_message.dart';
-import 'package:flutteri18n/components/progress.dart';
+import 'package:flutteri18n/components/progress/progress.dart';
 import 'package:flutteri18n/http/webclients/transaction_webclient.dart';
 import 'package:flutteri18n/models/transaction.dart';
 
