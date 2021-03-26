@@ -27,7 +27,14 @@ class Progress extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class ProgressView extends StatelessWidget {
+  String message;
+
+  ProgressView({String message = 'Sending...'}){
+    this.message = message;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +42,7 @@ class ProgressView extends StatelessWidget {
         title: Text('Processing...'),
       ),
       body: Progress(
-        message: 'Sending...',
+        message: message,
       ),
     );
   }
