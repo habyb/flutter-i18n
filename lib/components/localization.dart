@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutteri18n/components/error.dart';
 import 'package:flutteri18n/components/progress.dart';
 import 'package:flutteri18n/http/webclients/i18n_webclient.dart';
+import 'package:localstorage/localstorage.dart';
 
 import 'container.dart';
 
@@ -87,7 +88,7 @@ class I18NLoadingContainer extends BlocContainer {
   I18NLoadingContainer({
     @required String viewKey,
     @required I18NWidgetCreator creator,
-  }){
+  }) {
     this.creator = creator;
     this.viewKey = viewKey;
   }
@@ -96,7 +97,7 @@ class I18NLoadingContainer extends BlocContainer {
   Widget build(BuildContext context) {
     return BlocProvider<I18NMessagesCubit>(
       create: (BuildContext context) {
-        final cubit = I18NMessagesCubit();
+        final cubit = I18NMessagesCubit(this.viewKey);
         cubit.reload(I18NWebClient(this.viewKey));
         return cubit;
       },
@@ -106,15 +107,30 @@ class I18NLoadingContainer extends BlocContainer {
 }
 
 class I18NMessagesCubit extends Cubit<I18NMessagesState> {
-  I18NMessagesCubit() : super(InitI18NMessagesState());
+  final LocalStorage storage =
+      new LocalStorage('local_unsecure_version_1.json');
+  final String _viewKey;
 
-  reload(I18NWebClient client) {
+  I18NMessagesCubit(this._viewKey) : super(InitI18NMessagesState());
+
+  reload(I18NWebClient client) async {
     emit(LoadingI18NMessagesSatate());
-    client.findAll().then((messages) => emit(
-          LoadedI18NMessagesState(
-            I18NMessages(messages),
-          ),
-        ));
+    await storage.ready;  
+    final items = storage.getItem(_viewKey);
+
+    if (items != null) {
+      emit(LoadedI18NMessagesState(I18NMessages(items)));
+      return;
+    }
+
+    client.findAll().then(saveAndRefresh);
+  }
+
+  saveAndRefresh(Map<String, dynamic> messages) {
+    storage.setItem(_viewKey, messages);
+    print("saving...$_viewKey $messages");
+    final state = LoadedI18NMessagesState(I18NMessages(messages));
+    emit(state);
   }
 }
 
