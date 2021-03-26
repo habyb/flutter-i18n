@@ -64,7 +64,7 @@ class I18NMessages {
 
   I18NMessages(this._messages);
 
-  String get (String key) {
+  String get(String key) {
     assert(key != null);
     assert(_messages.containsKey(key));
     return _messages[key];
@@ -76,28 +76,62 @@ class FatalErrorI18NMessagesState extends I18NMessagesState {
   const FatalErrorI18NMessagesState();
 }
 
-class ContactsListCubit extends Cubit<I18NMessagesState> {
-  ContactsListCubit() : super(InitContactsListState());
+typedef Widget I18NWidgetCreator(I18NMessages messages);
 
-  void reload(ContactDao dao) async {
-    emit(LoadingContactsListState());
-    dao.findAll().then((contacts) => emit(LoadedContactsListState(contacts)));
+class I18NLoadingContainer extends BlocContainer {
+  final I18NWidgetCreator _creator;
+
+  I18NLoadingContainer(this._creator);
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<I18NMessagesCubit>(
+      create: (BuildContext context) {
+        final cubit = I18NMessagesCubit();
+        cubit.reload();
+        return cubit;
+      },
+      child: I18NLoadingView(this._creator),
+    );
+  }
+}
+
+class I18NMessagesCubit extends Cubit<I18NMessagesState> {
+  I18NMessagesCubit() : super(InitI18NMessagesState());
+
+  reload() {
+    emit(LoadingI18NMessagesSatate());
+    emit(
+      LoadedI18NMessagesState(
+        I18NMessages(
+          {
+            "transfer": "TRANSFER",
+            "transactionFeed": "TRANSACTION FEED",
+            "changeName": "CHANGE NAME",
+          },
+        ),
+      ),
+    );
   }
 }
 
 class I18NLoadingView extends StatelessWidget {
+  final I18NWidgetCreator _creator;
+
+  I18NLoadingView(this._creator);
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<I18NMessagesCubit, I18NMessagesState>(
-      builder: (context, state) {
-        if(state is InitI18NMessagesState || state is LoadingI18NMessagesSatate){
-          return ProgressView();
-        }
-        if(state is LoadedI18NMessagesState){
-          return TELA;
-        }
-        return ErrorView('Erro buscando mensagens da tela');
+        builder: (context, state) {
+      if (state is InitI18NMessagesState ||
+          state is LoadingI18NMessagesSatate) {
+        return ProgressView();
       }
-    ),
-  };
+      if (state is LoadedI18NMessagesState) {
+        final messages = state._messages;
+        return _creator.call(messages);
+      }
+      return ErrorView('Erro buscando mensagens da tela');
+    });
+  }
 }
